@@ -197,8 +197,109 @@ Account management, `.gitignore`, `.env` files, encoding parameters — none of 
 
 ---
 
-### 🔒 Module 2 — Giving Agents Multiple Tools
-*Coming next — when an agent can choose between tools, behavior starts feeling genuinely autonomous*
+### ✅ Module 2 — Giving Agents Multiple Tools
+**Status: Complete — May 19, 2026**
+
+---
+
+#### The upgrade
+
+Module 1's agent had one tool and one job. The question going into Module 2 was simple: what happens when you give an agent three tools and let it decide which ones to use, in what order, and how many times?
+
+The agent was given:
+
+| Tool | Purpose |
+|---|---|
+| `search_similar_games` | Find reference games to ground the design in reality |
+| `estimate_dev_time` | Calculate how long features would take a solo developer |
+| `save_game_design` | Save the completed document to disk |
+
+Same game idea as Module 1 — Krenholm 1857. Different agent. Watch what changed.
+
+---
+
+#### What the agent actually did
+
+This is the real terminal output, unedited:
+
+```
+[Agent using tool: search_similar_games]
+[Input: {"genre": "construction management simulation",
+         "mechanics": "resource management, building placement, worker assignment, historical setting"}]
+[Result: Similar successful indie games in this space: Prison Architect, RimWorld, Dwarf Fortress.]
+
+Designer: Great references! Prison Architect especially is a strong 2D construction management anchor.
+Now let me draft the core features and estimate development time — these are independent steps I can run together.
+
+[Agent using tool: estimate_dev_time]
+[Input: {"features": ["2D grid-based building placement", "Worker hiring and assignment",
+         "Resource supply chain", "Imperial quota system", "Worker morale and unrest",
+         "Procedural map", "Day/night cycle", "Historical event cards",
+         "Financial ledger", "Inspector visits", "Tech tree upgrade system"],
+         "team_size": 1}]
+[Result: Estimated development time: 24-36 weeks for core prototype.
+Note: as a solo dev, budget 3x this estimate for polish and bugs.]
+
+Designer: 24–36 weeks for the core is workable, but 3x polish is a serious warning.
+Let me trim scope smartly — dropping procedural maps and day/night cycle — and re-estimate the leaner version.
+
+[Agent using tool: estimate_dev_time]
+[Input: {"features": ["2D grid-based building placement", "Worker hiring and assignment",
+         "Resource supply chain", "Imperial quota system", "Worker morale and unrest",
+         "Narva River water power (fixed map)", "Historical event cards",
+         "Financial ledger", "Core building types", "Inspector visits"],
+         "team_size": 1}]
+[Result: Estimated development time: 20-30 weeks for core prototype.
+Note: as a solo dev, budget 3x this estimate for polish and bugs.]
+
+Designer: Solid — 20–30 weeks for core is a realistic solo MVP. Now let me compile everything into the final design document and save it.
+
+[Agent using tool: save_game_design]
+```
+
+The agent called `estimate_dev_time` **twice.**
+
+Nobody told it to do that. It saw the first result (24-36 weeks), decided that was too heavy, cut two features on its own judgment — procedural maps and the day/night cycle — and ran the tool again to verify the trimmed scope was better. Only then did it write and save the final document.
+
+That re-estimation moment is the entire point of Module 2. The agent didn't just use tools — it **iterated** based on what the tools told it. That's judgment, not execution.
+
+---
+
+#### What changed in the output
+
+The Module 2 design document is visibly richer than Module 1's. Because the agent researched reference games first, Prison Architect's visual clarity appears explicitly in the art direction. Because it ran scope estimation before writing, the document includes a realistic 20-30 week development roadmap and a dedicated "Intentionally Cut Features" section — things the agent decided to remove to keep the project shippable.
+
+It didn't just design a game. It designed a *buildable* game.
+
+[Read the full Krenholm 1857 design document →](krenholm_1857_design.md)
+
+---
+
+#### Also: PowerShell doesn't use &&
+
+```
+At line:1 char:11
++ git add . && git commit -m "Module 2 complete..."
++           ~~
+The token '&&' is not a valid statement separator in this version.
+```
+
+On Windows PowerShell, run git commands one at a time. `&&` is a Linux/Mac thing. Every tutorial on the internet forgets this. Now you know.
+
+---
+
+#### What Module 2 actually taught
+
+**Tool order is a decision, not an instruction.**
+The agent searched for references before designing, estimated time before finalizing, and iterated when the first estimate was too high. Nobody specified that sequence. It reasoned its way to it from the tool descriptions alone. Writing good tool descriptions is therefore one of the most important skills in agent design.
+
+**Agents iterate, not just execute.**
+The double `estimate_dev_time` call is the clearest example yet of genuine agentic behavior. The agent observed a result, formed an opinion about it, took corrective action, and verified the correction. That loop — observe, evaluate, adjust — is what separates an agent from a script.
+
+**Tools shape output quality.**
+The same game idea produced a substantially better document in Module 2 than Module 1. Not because the model got smarter — but because it had more information to work with. Tools are how you feed an agent the context it needs to do better work.
+
+---
 
 ### 🔒 Module 3 — Two Agents Talking
 ### 🔒 Module 4 — CrewAI: First Real Crew
